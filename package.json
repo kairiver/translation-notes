@@ -1,0 +1,7 @@
+{
+  "name": "transration-notes",
+  "version": "1.0.0",
+  "dependencies": {
+    "vite": "^4.1.1"
+  }
+}

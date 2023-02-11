@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  proxy:
+    container_name: proxy
+    build: ./docker/nginx
+    ports:
+      - 8000:80
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/usr/share/nginx/html
+  app:
+    container_name: app
+    build: ./docker/php
+    volumes:
+      - ./docker/php/php.ini:/usr/local/php/php.ini
+      - ./src:/var/www/html
+    ports:
+      - 5173:5173
+  db:
+    container_name: db
+    build: ./docker/mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+      - db-volume:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: laravel_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+volumes:
+  db-volume:
