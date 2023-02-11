@@ -1,2 +1,2 @@
-# transration-note
+# translation-note
  
