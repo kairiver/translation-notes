@@ -1,11 +1,23 @@
 import './App.css'
-import {Box, Button, Card, CardContent, CardHeader, Fab, IconButton, Modal, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    Fab,
+    IconButton,
+    Modal,
+    Typography
+} from "@mui/material";
 import TextField from '@mui/material/TextField';
 import React, {useEffect, useState} from "react";
-import {AccountCircle} from "@mui/icons-material";
+import {AccountCircle, VolumeUpRounded} from "@mui/icons-material";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
+import nl2br from 'react-nl2br';
 
 type noteItem = {
     id: string;
@@ -87,15 +99,22 @@ function App() {
                         />
                         <CardContent>
                             <Typography variant="body2" color="text.secondary">
-                                {note.note}
+                                {nl2br(note.note)}
                             </Typography>
                         </CardContent>
                         <CardContent>
                             {/*<CircularProgress/>*/}
                             <Typography paragraph>
-                                {note.translation}
+                                {nl2br(note.translation)}
                             </Typography>
                         </CardContent>
+                        <CardActions disableSpacing>
+                            <IconButton
+                                aria-label="speak"
+                            >
+                                <VolumeUpRounded />
+                            </IconButton>
+                        </CardActions>
                     </Card>
                 );
             })}

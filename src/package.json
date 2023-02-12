@@ -20,6 +20,7 @@
         "@emotion/react": "^11.10.5",
         "@emotion/styled": "^11.10.5",
         "@mui/icons-material": "^5.11.0",
-        "@mui/material": "^5.11.8"
+        "@mui/material": "^5.11.8",
+        "react-nl2br": "^1.0.4"
     }
 }
