@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 
 type noteItem = {
+    id: string;
     created_at: string;
     note: string;
     translation: string;
@@ -48,13 +49,14 @@ function App() {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const menuOpen = Boolean(anchorEl);
-    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+    const handleDeleteClick = (event: React.MouseEvent<HTMLElement>) => {
+        axios
+            .delete("/api/notes", {data: {id: event.currentTarget.id}})
+            .then((res) => {
+                setNotes(res.data.data);
+            });
     };
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
         // multipart/form-data形式のデータをapplication/x-www-form-urlencodedに変換
         const params = new URLSearchParams(new FormData(event.currentTarget));
@@ -79,11 +81,11 @@ function App() {
                             action={
                                 <IconButton
                                     aria-label="settings"
-                                    id="fade-button"
+                                    id={note.id}
                                     aria-controls={menuOpen ? 'fade-menu' : undefined}
                                     aria-haspopup="true"
                                     aria-expanded={menuOpen ? 'true' : undefined}
-                                    onClick={handleMenuClick}
+                                    onClick={handleDeleteClick}
                                 >
                                     <DeleteIcon/>
                                 </IconButton>

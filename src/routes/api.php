@@ -22,4 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group( ['middleware' => 'api'], function(){
     Route::get('notes', [NoteController::class, 'getNotes']);
     Route::post('notes', [NoteController::class, 'postNotes']);
+    Route::delete('notes', [NoteController::class, 'deleteNotes']);
 });

@@ -62,4 +62,11 @@ class NoteController extends Controller
 
         return NoteResource::collection(Note::all()->sortByDesc("created_at"));
     }
+
+    public function deleteNotes(Request $request): AnonymousResourceCollection
+    {
+        Note::destroy($request->input('id'));
+
+        return NoteResource::collection(Note::all()->sortByDesc("created_at"));
+    }
 }
