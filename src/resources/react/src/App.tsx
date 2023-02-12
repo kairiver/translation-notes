@@ -1,26 +1,15 @@
 import './App.css'
-import {
-    Box, Button,
-    Card,
-    CardContent,
-    CardHeader,
-    Fab,
-    Fade,
-    IconButton,
-    Menu,
-    MenuItem,
-    Modal,
-    Typography
-} from "@mui/material";
+import {Box, Button, Card, CardContent, CardHeader, Fab, IconButton, Modal, Typography} from "@mui/material";
 import TextField from '@mui/material/TextField';
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {AccountCircle} from "@mui/icons-material";
 import AddIcon from '@mui/icons-material/Add';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DeleteIcon from '@mui/icons-material/Delete';
+import axios from "axios";
 
 type noteItem = {
-    title: Date;
-    content: string;
+    created_at: string;
+    note: string;
     translation: string;
 };
 
@@ -38,10 +27,20 @@ const style = {
 };
 
 function App() {
-    const notes: noteItem[] = [
-        {title: new Date(), content: "do somethingあああああああああああああああああああああああああああああああ", translation: "翻訳されたのがこちら"},
-        {title: new Date(), content: "英語間違ってた", translation: "純粋につらい"},
-    ];
+    const [notes, setNotes] = useState([]);
+    useEffect(
+        () => {
+            axios
+                .get('/api/notes')
+                .then((res) => {
+                    setNotes(res.data.data);
+                })
+                .catch((e) => {
+                    console.log(e);
+                })
+        },
+        []
+    );
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -55,17 +54,28 @@ function App() {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // multipart/form-data形式のデータをapplication/x-www-form-urlencodedに変換
+        const params = new URLSearchParams(new FormData(event.currentTarget));
+        axios
+            .post("/api/notes", params)
+            .then((res) => {
+                setNotes(res.data.data);
+            });
+        setOpen(false);
+    };
 
     return (
         <div className="App">
             {notes.map((note: noteItem) => {
                 return (
-                    <Card sx={{maxWidth: 500, mt: 3}}>
+                    <Card sx={{width: 500, mt: 3}}>
                         <CardHeader
                             avatar={
                                 <AccountCircle fontSize="large"/>
                             }
-                            title={note.title.toDateString()}
+                            title={note.created_at}
                             action={
                                 <IconButton
                                     aria-label="settings"
@@ -75,26 +85,13 @@ function App() {
                                     aria-expanded={menuOpen ? 'true' : undefined}
                                     onClick={handleMenuClick}
                                 >
-                                    <MoreVertIcon/>
+                                    <DeleteIcon/>
                                 </IconButton>
                             }
                         />
-                        <Menu
-                            id="fade-menu"
-                            MenuListProps={{
-                                'aria-labelledby': 'fade-button',
-                            }}
-                            anchorEl={anchorEl}
-                            open={menuOpen}
-                            onClose={handleMenuClose}
-                            TransitionComponent={Fade}
-                        >
-                            <MenuItem onClick={handleMenuClose}>Update</MenuItem>
-                            <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
-                        </Menu>
                         <CardContent>
                             <Typography variant="body2" color="text.secondary">
-                                {note.content}
+                                {note.note}
                             </Typography>
                         </CardContent>
                         <CardContent>
@@ -110,7 +107,7 @@ function App() {
                 color="primary"
                 aria-label="add"
                 sx={{
-                    position: 'absolute',
+                    position: 'fixed',
                     bottom: 16,
                     right: 16,
                 }}
@@ -125,27 +122,42 @@ function App() {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <TextField
-                        fullWidth={true}
-                        id="filled-multiline-static"
-                        label="note"
-                        multiline
-                        rows={4}
-                        variant="standard"
-                    />
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row-reverse'
-                    }}>
-                        <Button
-                            sx={{
-                                mt: 3,
-                            }}
-                            variant="contained"
-                        >
-                            send
-                        </Button>
-                    </Box>
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            fullWidth={true}
+                            name="note"
+                            id="filled-multiline-static"
+                            label="note"
+                            multiline
+                            rows={4}
+                            variant="standard"
+                            required={true}
+                        />
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'row-reverse'
+                        }}>
+                            <Button
+                                sx={{
+                                    mt: 3,
+                                }}
+                                variant="contained"
+                                type="submit"
+                            >
+                                send
+                            </Button>
+                            <Button
+                                sx={{
+                                    mt: 3,
+                                    mr: 1
+                                }}
+                                variant="outlined"
+                                onClick={handleClose}
+                            >
+                                cancel
+                            </Button>
+                        </Box>
+                    </form>
                 </Box>
             </Modal>
         </div>
