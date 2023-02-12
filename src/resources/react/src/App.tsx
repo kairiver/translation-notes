@@ -46,9 +46,6 @@ function App() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const menuOpen = Boolean(anchorEl);
     const handleDeleteClick = (event: React.MouseEvent<HTMLElement>) => {
         axios
             .delete("/api/notes", {data: {id: event.currentTarget.id}})
@@ -80,11 +77,8 @@ function App() {
                             title={note.created_at}
                             action={
                                 <IconButton
-                                    aria-label="settings"
+                                    aria-label="delete"
                                     id={note.id}
-                                    aria-controls={menuOpen ? 'fade-menu' : undefined}
-                                    aria-haspopup="true"
-                                    aria-expanded={menuOpen ? 'true' : undefined}
                                     onClick={handleDeleteClick}
                                 >
                                     <DeleteIcon/>
